@@ -1,0 +1,96 @@
+# Board: ESP32-C3 Super Mini (Generic)
+# Definition: definitions/boards/esp32-c3-supermini/manifest.yaml
+
+esphome:
+  name: cafetera
+  friendly_name: Cafetera
+  on_boot:
+    priority: -100
+    then:
+      - if:
+          condition:
+            binary_sensor.is_on: sensor
+          then:
+            - text_sensor.template.publish:
+                id: deposito
+                state: "Lleno"
+            - light.turn_off: led
+          else:
+            - text_sensor.template.publish:
+                id: deposito
+                state: "Vacío"
+            - light.turn_on:
+                id: led
+                brightness: 100%
+                red: 100%
+                green: 0%
+                blue: 0%
+                
+esp32:
+  variant: esp32c3
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+#  encryption:
+#    key: "j9cjFCwxhY8+EvF/YSd12RPOt3hjAwpBUkgZfYQe8tI="
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: Cafetera Fallback Hotspot
+    password: "rwaa6fFli5oH"
+
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    id: sensor
+    internal: true
+    pin:
+      number: GPIO2
+      mode:
+        input: true
+        pulldown: true 
+    device_class: moisture
+    on_release:
+      then:
+        - text_sensor.template.publish:
+            id: deposito
+            state: "Vacío"
+        - light.turn_on:
+            id: led
+            brightness: 100%
+            red: 100%
+            green: 0%
+            blue: 0%
+
+    on_press:
+      then:
+        - text_sensor.template.publish:
+            id: deposito
+            state: "Lleno"
+        - light.turn_off: led
+
+text_sensor:
+  - platform: template
+    id: deposito
+    name: "Depósito"
+    icon: "mdi:water"
+
+    
+light:
+  - platform: esp32_rmt_led_strip
+    chipset: WS2812
+    id: led
+    pin: GPIO3
+    num_leds: 2
+    rgb_order: GRB
+    name: "LED"    
