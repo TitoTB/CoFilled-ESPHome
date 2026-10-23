@@ -1,10 +1,10 @@
 # CoFilled · ESPHome
 
+![CoFilled's coffee cup-shaped enclosure glowing red beside a coffee machine](Images/CoFilled.jpg)
+
 A water tank sensor designed to attach to a coffee machine's water reservoir and alert you when it runs out of water. A red light inside a **coffee cup-shaped enclosure** provides a visible reminder to refill the tank.
 
 CoFilled uses an **ESP32-C3**, **ESPHome**, and two **WS2812** LEDs. It also publishes the tank status to Home Assistant.
-
-![CoFilled's coffee cup-shaped enclosure glowing red beside a coffee machine](Images/CoFilled.jpg)
 
 ## Useful links
 
